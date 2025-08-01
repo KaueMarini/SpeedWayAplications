@@ -292,13 +292,14 @@ if botao_analisar:
                 st.write(df_estilizado.to_html(classes='styled-table', escape=False), unsafe_allow_html=True)
                 
                 st.subheader("📊 Resumo Geral dos Padrões")
+                total_p1 = soma_p1_por_linha.sum()
+                total_p2 = soma_p2_por_linha.sum()
+                
                 col_resumo1, col_resumo2 = st.columns([1, 1], gap="large")
 
                 with col_resumo1:
                     with st.container(border=True):
                         st.markdown("##### Contagem Total")
-                        total_p1 = soma_p1_por_linha.sum()
-                        total_p2 = soma_p2_por_linha.sum()
                         st.metric(label="🟣 Total de Padrões P1", value=total_p1)
                         st.metric(label="🧩 Total de Padrões P2", value=total_p2)
 
@@ -308,87 +309,83 @@ if botao_analisar:
                         if total_p1 > 0 or total_p2 > 0:
                             df_resumo_grafico = pd.DataFrame({"P1": [total_p1], "P2": [total_p2]})
                             st.bar_chart(df_resumo_grafico, color=["#6f42c1", "#008F8C"])
-                                # --- NOVA TABELA DE SEQUÊNCIAS DE P1/P2 ---
-               # --- NOVA TABELA: Apenas Células com Sequência ---
-                            with st.container(border=True):
-                             st.subheader("🔍 Tabela de Sequências de P1/P2 (Consecutivas)")
-
-                            df_seq = df_resultados.iloc[:, :-2].copy()  # Remove colunas Σ
-                            df_seq_tooltip = df_seq.copy()
-
-                            for i in range(len(df_seq)):
-                                linha = df_seq.iloc[i].tolist()
-                                nova_linha = ['X'] * len(linha)
-                                nova_tooltips = ['Sem sequência'] * len(linha)
-
-                                j = 0
-                                while j < len(linha) - 1:
-                                    atual = linha[j]
-                                    prox = linha[j + 1]
-
-                                    if atual in ['P1', 'P2'] and atual == prox:
-                                        # marca sequência a partir de j
-                                        k = j
-                                        while k < len(linha) and linha[k] == atual:
-                                            nova_linha[k] = atual
-                                            nova_tooltips[k] = f"Sequência de {atual}"
-                                            k += 1
-                                        j = k  # avança até fim da sequência
-                                    else:
-                                        j += 1  # segue procurando
-
-                                df_seq.iloc[i] = nova_linha
-                                df_seq_tooltip.iloc[i] = nova_tooltips
-
-                            df_seq_estilizado = df_seq.style.set_tooltips(df_seq_tooltip).apply(lambda col: col.map(estilizar_tabela))
-                            st.markdown(CSS_ESTILO_TABELA, unsafe_allow_html=True)
-                            html_da_tabela = df_seq_estilizado.to_html(classes='styled-table', escape=False, index=True)
-                            st.markdown(f'<div class="table-container">{html_da_tabela}</div>', unsafe_allow_html=True) 
-                            st.subheader("📏 Máximo de Repetições Consecutivas por Linha")
-
-                            max_p1_por_linha = []
-                            max_p2_por_linha = []
-
-                            for i in range(len(df_resultados)):
-                                    linha = df_resultados.iloc[i].tolist()
-                                    max_p1 = max_p2 = cont = 0
-                                    atual = ""
-
-                                    for valor in linha:
-                                        if valor == atual and valor in ['P1', 'P2']:
-                                            cont += 1
-                                        else:
-                                            cont = 1 if valor in ['P1', 'P2'] else 0
-                                            atual = valor
-
-                                        if atual == 'P1':
-                                            max_p1 = max(max_p1, cont)
-                                        elif atual == 'P2':
-                                            max_p2 = max(max_p2, cont)
-
-                                    max_p1_por_linha.append(max_p1)
-                                    max_p2_por_linha.append(max_p2)
-
-                            df_repeticoes = pd.DataFrame({
-                                    "Máx Repetições P1": max_p1_por_linha,
-                                    "Máx Repetições P2": max_p2_por_linha
-                                }, index=df_resultados.index)
-
-                            def colorir_max(val):
-                                    return 'background-color: #ffc107; color: black; font-weight: bold; text-align: center;'
-
-                            df_repeticoes_estilizado = (
-                                    df_repeticoes.style
-                                    .applymap(colorir_max)
-                                    .set_table_styles([
-                                        {"selector": "th", "props": [("background-color", "#111111"), ("color", "white"), ("font-weight", "bold")]}
-                                    ])
-                                )
-
-                            st.markdown(CSS_ESTILO_TABELA, unsafe_allow_html=True)
-                            st.write(df_repeticoes_estilizado.to_html(classes='styled-table', escape=False), unsafe_allow_html=True)            
                         else:
-                            st.write("Nenhum padrão encontrado.")
+                            st.info("Nenhum padrão P1 ou P2 foi encontrado para exibir o gráfico.")
+            
+                # --- SEÇÃO DAS TABELAS DE LARGURA TOTAL ---
+                if total_p1 > 0 or total_p2 > 0:
+                    st.divider()
+                    
+                    # --- Tabela de Sequências de P1/P2 ---
+                    with st.container(border=True):
+                        st.subheader("🔍 Tabela de Sequências de P1/P2 (Apenas Consecutivas)")
+                        df_seq = df_resultados.iloc[:, :-2].copy()  # Remove colunas Σ
+                        df_seq_tooltip = df_seq.copy()
+
+                        for i in range(len(df_seq)):
+                            linha = df_seq.iloc[i].tolist()
+                            nova_linha = ['X'] * len(linha) # Usar string vazia para células sem sequência
+                            nova_tooltips = [''] * len(linha)
+
+                            j = 0
+                            while j < len(linha) - 1:
+                                atual = linha[j]
+                                prox = linha[j + 1]
+
+                                if atual in ['P1', 'P2'] and atual == prox:
+                                    k = j
+                                    while k < len(linha) and linha[k] == atual:
+                                        nova_linha[k] = atual
+                                        nova_tooltips[k] = f"Parte de uma sequência de {atual}"
+                                        k += 1
+                                    j = k 
+                                else:
+                                    j += 1
+                            df_seq.iloc[i] = nova_linha
+                            df_seq_tooltip.iloc[i] = nova_tooltips
+
+                        df_seq_estilizado = df_seq.style.set_tooltips(df_seq_tooltip).apply(lambda col: col.map(estilizar_tabela))
+                        st.markdown(CSS_ESTILO_TABELA, unsafe_allow_html=True)
+                        html_da_tabela_seq = df_seq_estilizado.to_html(classes='styled-table', escape=False, index=True)
+                        st.markdown(f'<div class="table-container">{html_da_tabela_seq}</div>', unsafe_allow_html=True) 
+
+                    # --- Tabela de Máximo de Repetições ---
+                    with st.container(border=True):
+                        st.subheader("📏 Máximo de Repetições Consecutivas por Linha")
+                        max_p1_por_linha, max_p2_por_linha = [], []
+
+                        for i in range(len(df_resultados)):
+                            linha = df_resultados.iloc[i, :-2].tolist() # Ignora colunas de soma
+                            max_p1 = max_p2 = cont = 0
+                            atual = ""
+                            for valor in linha:
+                                if valor == atual and valor in ['P1', 'P2']:
+                                    cont += 1
+                                else:
+                                    cont = 1 if valor in ['P1', 'P2'] else 0
+                                    atual = valor
+
+                                if atual == 'P1': max_p1 = max(max_p1, cont)
+                                elif atual == 'P2': max_p2 = max(max_p2, cont)
+                            max_p1_por_linha.append(max_p1)
+                            max_p2_por_linha.append(max_p2)
+
+                        df_repeticoes = pd.DataFrame({
+                            "Máx Repetições P1": max_p1_por_linha,
+                            "Máx Repetições P2": max_p2_por_linha
+                        }, index=df_resultados.index)
+
+                        def colorir_max(val):
+                            if val > 0:
+                                return 'background-color: #ffc107; color: black; font-weight: bold; text-align: center;'
+                            return 'text-align: center;'
+
+                        df_repeticoes_estilizado = (
+                            df_repeticoes.style.apply(lambda col: col.map(colorir_max))
+                            .set_table_styles([{"selector": "th", "props": [("background-color", "#343a40"), ("color", "white"), ("font-weight", "bold")]}])
+                        )
+                        st.markdown(CSS_ESTILO_TABELA, unsafe_allow_html=True)
+                        st.write(df_repeticoes_estilizado.to_html(classes='styled-table', escape=False), unsafe_allow_html=True)            
             else:
                 st.error("❌ A análise não produziu resultados.")
 else:
