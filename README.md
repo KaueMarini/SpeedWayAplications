@@ -1,7 +1,9 @@
 🎯 Analisador de Grid para Corridas
+
 Este projeto é uma aplicação web desenvolvida com Streamlit para analisar dados de grids de corrida, focando na identificação de padrões sequenciais específicos, denominados P1 e P2. A ferramenta oferece uma interface visual e interativa para colar dados brutos de corridas e receber uma análise detalhada e estilizada em tempo real.
 
 ✨ Funcionalidades Principais
+
 Análise Contínua de Corridas: Identifica a relação entre corridas consecutivas para encontrar padrões.
 
 Detecção de Padrões P1 e P2: Lógica customizada para marcar ocorrências onde o vencedor da corrida atual tem uma relação específica com os pilotos da corrida anterior.
@@ -21,6 +23,7 @@ Modo de Depuração: Uma visão detalhada da lógica de análise, mostrando a re
 Interface Moderna: UI limpa e responsiva, com suporte a temas claro e escuro, para uma melhor experiência do usuário.
 
 🛠️ Tecnologias Utilizadas
+
 Python: Linguagem de programação principal.
 
 Streamlit: Framework utilizado para construir a interface web interativa.
