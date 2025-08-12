@@ -33,18 +33,5 @@ Pandas: Biblioteca para manipulação e análise dos dados em formato de DataFra
 
 Site para teste: https://speedwayrun.streamlit.app/
 
-Tabela para copiar e colar para teste :
-
-H	1	4	7	10	13	16	19	22	25	28	31	34	37	40	43	46	49	52	55	58	
-
-4	2-4	1-3	2-1	4-2	1-4	1-3	2-4	4-3	4-1	2-4	2-4	3-1	4-1								
-
-3	4-3	1-4	4-1	4-1	3-2	2-3	4-1	1-4	2-3	1-3	2-1	3-2	1-3	1-3	2-4	2-3	4-2	4-2	1-3	4-3	2
-
-2	1-2	2-1	3-4	2-3	3-2	3-4	2-4	3-4	1-3	1-4	2-1	2-3	2-4	4-2	1-4	4-1	2-4	4-3	4-1	2-4	6
-
-1	1-4	2-1	2-1	1-3	4-3	4-2	2-4	3-2	1-4	2-4	1-2	2-4	3-1	2-3	2-3	2-3	3-2	1-4	4-3	4-1	8
-
-0	3-4	2-1	3-1	3-1	2-3	3-1	1-4	2-1	1-3	2-1	2-1	3-1	1-2	2-1	4-3	4-2	4-2	1-4	1-3	2-3	4
-
-23	3-4	3-1	2-1	4-3	4-2	3-1	3-4	1-4	1-2	4-2	2-4	4-2	4-1	3-4	1-3	2-1	3-4	1-4	1-4	2-1	4
+Entra nesse site para pegar a tabela. Troque a opção Podio por Tricast!!!
+https://historicosbet.com/app/speedway
